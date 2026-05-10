@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Reports{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0 fw-semibold">HTML Reports</h4>
+  <a href="/" class="btn btn-sm btn-outline-secondary">← Workflows</a>
+</div>
+
+{% if reports %}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>File</th>
+          <th class="text-end">Size</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+        <tr>
+          <td class="fw-semibold">{{ r.name }}</td>
+          <td class="text-end text-muted small">{{ r.size_kb }} KB</td>
+          <td class="text-end">
+            <a href="/reports/{{ r.name }}" target="_blank" class="btn btn-sm btn-outline-primary me-1">Mở</a>
+            <form method="post" action="/reports/{{ r.name }}/delete" style="display:inline"
+                  onsubmit="return confirm('Xoá báo cáo {{ r.name }}?')">
+              <button class="btn btn-sm btn-outline-danger">Xoá</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="text-center text-muted py-5">
+  <p>No reports generated yet.</p>
+  <p class="small">Run a workflow to generate an HTML report.</p>
+</div>
+{% endif %}
+{% endblock %}

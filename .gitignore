@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+.coverage
+htmlcov/
+.obsidian/
+configs/
+reports/
+node_modules

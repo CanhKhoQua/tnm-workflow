@@ -1,0 +1,14 @@
+daily:
+  enabled: true
+  hour: 17
+  minute: 0
+weekly:
+  enabled: false
+  day_of_week: mon
+  hour: 20
+  minute: 0
+monthly:
+  enabled: false
+  day: 1
+  hour: 20
+  minute: 0

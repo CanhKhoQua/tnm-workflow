@@ -1,0 +1,95 @@
+{
+  "name": "Teams webhook - Weekly",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "=0 0 20 * * 1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -460,
+        -120
+      ],
+      "id": "ecdb869c-e06f-445a-9392-6e3688c4bf6f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://webapp:5000/workflow/West/run",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        60
+      ],
+      "id": "64f32a29-1561-496f-8ba1-4c6a5a839403",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://webapp:5000/workflow/East/run",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        -300
+      ],
+      "id": "5aa3b210-6532-4c24-9e57-5e456b7e3c81",
+      "name": "HTTP Request1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d3865028-8dfa-4bb6-9908-8281e24f342c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1120f24bca9e5d07ffee7df8b3342df8e131b9b78b2c0393ba89f852cd327f5a"
+  },
+  "id": "nMkSUNZM89cPg3oE",
+  "tags": []
+}

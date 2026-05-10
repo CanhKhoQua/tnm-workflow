@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title_suffix %} — Lịch chạy{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0 fw-semibold">Lịch chạy tự động</h4>
+</div>
+
+<form method="post" action="/settings/save">
+  <div class="row g-3 mb-4">
+
+    <!-- Daily -->
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="card-title mb-0 fw-semibold">📅 Hàng ngày</h6>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" role="switch"
+                     id="daily_enabled" name="daily_enabled"
+                     onchange="toggleCard('daily', this.checked)"
+                     {% if settings.daily.enabled %}checked{% endif %}>
+            </div>
+          </div>
+          <div id="daily-fields" {% if not settings.daily.enabled %}style="opacity:.4;pointer-events:none"{% endif %}>
+            <label class="form-label small text-muted mb-1">Thời gian chạy</label>
+            <div class="d-flex gap-2 align-items-center">
+              <input type="number" class="form-control form-control-sm text-center"
+                     name="daily_hour" min="0" max="23" value="{{ settings.daily.hour }}"
+                     style="width:68px">
+              <span class="text-muted">:</span>
+              <input type="number" class="form-control form-control-sm text-center"
+                     name="daily_minute" min="0" max="59" value="{{ '%02d' % settings.daily.minute }}"
+                     style="width:68px">
+              <span class="text-muted small">giờ (ICT)</span>
+            </div>
+          </div>
+          <div class="mt-3 small text-muted">
+            {% if next_runs.daily %}
+              Lần tới: <strong class="text-success">{{ next_runs.daily }}</strong>
+            {% elif settings.daily.enabled %}
+              Lần tới: —
+            {% else %}
+              Đang tắt
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly -->
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="card-title mb-0 fw-semibold">📆 Hàng tuần</h6>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" role="switch"
+                     id="weekly_enabled" name="weekly_enabled"
+                     onchange="toggleCard('weekly', this.checked)"
+                     {% if settings.weekly.enabled %}checked{% endif %}>
+            </div>
+          </div>
+          <div id="weekly-fields" {% if not settings.weekly.enabled %}style="opacity:.4;pointer-events:none"{% endif %}>
+            <label class="form-label small text-muted mb-1">Ngày trong tuần</label>
+            <select name="weekly_dow" class="form-select form-select-sm mb-2">
+              {% for val, label in [('mon','Thứ Hai'),('tue','Thứ Ba'),('wed','Thứ Tư'),('thu','Thứ Năm'),('fri','Thứ Sáu'),('sat','Thứ Bảy'),('sun','Chủ Nhật')] %}
+              <option value="{{ val }}" {% if settings.weekly.day_of_week == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            <label class="form-label small text-muted mb-1">Thời gian chạy</label>
+            <div class="d-flex gap-2 align-items-center">
+              <input type="number" class="form-control form-control-sm text-center"
+                     name="weekly_hour" min="0" max="23" value="{{ settings.weekly.hour }}"
+                     style="width:68px">
+              <span class="text-muted">:</span>
+              <input type="number" class="form-control form-control-sm text-center"
+                     name="weekly_minute" min="0" max="59" value="{{ '%02d' % settings.weekly.minute }}"
+                     style="width:68px">
+              <span class="text-muted small">giờ (ICT)</span>
+            </div>
+          </div>
+          <div class="mt-3 small text-muted">
+            {% if next_runs.weekly %}
+              Lần tới: <strong class="text-success">{{ next_runs.weekly }}</strong>
+            {% elif settings.weekly.enabled %}
+              Lần tới: —
+            {% else %}
+              Đang tắt
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly -->
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="card-title mb-0 fw-semibold">🗓 Hàng tháng</h6>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" role="switch"
+                     id="monthly_enabled" name="monthly_enabled"
+                     onchange="toggleCard('monthly', this.checked)"
+                     {% if settings.monthly.enabled %}checked{% endif %}>
+            </div>
+          </div>
+          <div id="monthly-fields" {% if not settings.monthly.enabled %}style="opacity:.4;pointer-events:none"{% endif %}>
+            <label class="form-label small text-muted mb-1">Ngày trong tháng</label>
+            <select name="monthly_day" class="form-select form-select-sm mb-2">
+              {% for d in range(1, 29) %}
+              <option value="{{ d }}" {% if settings.monthly.day == d %}selected{% endif %}>Ngày {{ d }}</option>
+              {% endfor %}
+            </select>
+            <label class="form-label small text-muted mb-1">Thời gian chạy</label>
+            <div class="d-flex gap-2 align-items-center">
+              <input type="number" class="form-control form-control-sm text-center"
+                     name="monthly_hour" min="0" max="23" value="{{ settings.monthly.hour }}"
+                     style="width:68px">
+              <span class="text-muted">:</span>
+              <input type="number" class="form-control form-control-sm text-center"
+                     name="monthly_minute" min="0" max="59" value="{{ '%02d' % settings.monthly.minute }}"
+                     style="width:68px">
+              <span class="text-muted small">giờ (ICT)</span>
+            </div>
+          </div>
+          <div class="mt-3 small text-muted">
+            {% if next_runs.monthly %}
+              Lần tới: <strong class="text-success">{{ next_runs.monthly }}</strong>
+            {% elif settings.monthly.enabled %}
+              Lần tới: —
+            {% else %}
+              Đang tắt
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+  <a href="/" class="btn btn-outline-secondary ms-2">Huỷ</a>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleCard(mode, enabled) {
+  const fields = document.getElementById(mode + '-fields');
+  fields.style.opacity = enabled ? '1' : '0.4';
+  fields.style.pointerEvents = enabled ? '' : 'none';
+}
+</script>
+{% endblock %}
