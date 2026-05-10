@@ -72,7 +72,7 @@ Start and register:
 ```bash
 pm2 start ecosystem.config.cjs
 pm2 save
-pm2 startup
+pm2 startup / pm2 resurrect
 ```
 
 > `pm2 startup` prints a command — copy and run it once. This registers pm2 with Windows Task Scheduler so the app restarts automatically after every reboot.
